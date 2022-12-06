@@ -9,9 +9,15 @@ import ToDoService.models.dto.Filter;
 import ToDoService.repositories.TaskCategoryRepository;
 import ToDoService.repositories.TaskRepository;
 import ToDoService.repositories.UserRepository;
+import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,49 +36,40 @@ public class TaskService {
         this.taskCategoryRepository = taskCategoryRepository;
     }
 
-    public Iterable<Task> getAllTasks(Filter filter) {
-//        public Iterable<Task> getAllTasks() {
+    public List<Task> getAllTasks(Filter filter) {
 
-        java.util.Date date = new Date();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        System.out.println("Getting all the tasks");
+//        LocalDateTime startDateBegin = new
 
-//        return this.taskRepository.findAll();
-        List<Task> result = new ArrayList<Task>();
+        if () {
 
-//        Iterable<Task> result = this.taskRepository.findTasksWithFilter(filter.getStartDateBegin(), filter.getUpdateDateEnd());
+        }
+        LocalDateTime startDateBegin = LocalDate.parse(filter.getStartDateBegin(), formatter).atStartOfDay();
+        LocalDateTime startDateEnd = LocalDate.parse(filter.getStartDateEnd(), formatter).atStartOfDay();
+        LocalDateTime updateDateBegin = LocalDate.parse(filter.getUpdateDateBegin(), formatter).atStartOfDay();
+        LocalDateTime updateDateEnd = LocalDate.parse(filter.getUpdateDateEnd(), formatter).atStartOfDay();
+        TaskCategory category = this.taskCategoryRepository.findTaskCategoryById(filter.getCategory());
 
-
-        return this.taskRepository.findAllByCreation_timeBetween(filter.getStartDateBegin(), filter.getUpdateDateEnd());
-//        for (t i: DTO_result) {
-//
-//            TaskCategory category = taskCategoryRepository.findTaskCategoryById(i.getCategory_id());
-//            User usr = userRepository.findUserByUserId(i.getUser_id());
-//
-//            Task task = new Task(i.getDescription(),
-//                    i.getStatus(),
-//                    new Timestamp(date.getTime()),
-//                    usr,
-//                    category
-//            );
-//            result.add(task);
-//
-//        }
+        //Very questionable optional parameters filter logic, probably have to be in CRUD level or idk
 
 
 
-       // return result;
+        if(startDateBegin != null && startDateEnd != null && updateDateBegin != null && updateDateEnd != null && category != null) {
+            return this.taskRepository.findAllByCategoryAndCreateTimeBetweenAndUpdateTimeBetween(category, startDateBegin, startDateEnd, updateDateBegin, updateDateEnd);
+        } else {
+            return new ArrayList<Task>();
+        }
+
     }
-
 
     public void updateTaskStatus(Integer ID, Boolean status) {
 
         Optional<Task> taskToUpdate = this.taskRepository.findById(ID);
-        Task t = taskToUpdate.orElseThrow(() -> new NullPointerException());
+        Task t = taskToUpdate.orElseThrow(NullPointerException::new);
         t.setStatus(status);
 
-        java.util.Date date = new Date();
-        t.setUpdateTime(new Timestamp(date.getTime()));
+        t.setUpdateTime(LocalDateTime.now());
 
         this.taskRepository.save(t);
         System.out.println("Task Updated");
@@ -81,7 +78,7 @@ public class TaskService {
 
     public void addTask(DTO_Task taskDto) {
 
-        java.util.Date date = new Date();
+
 
         TaskCategory category = taskCategoryRepository.findTaskCategoryById(taskDto.getCategory_id());
         User usr = userRepository.findUserByUserId(taskDto.getUser_id());
@@ -91,19 +88,14 @@ public class TaskService {
 //
         Task task = new Task(taskDto.getDescription(),
                 taskDto.getStatus(),
-                new Timestamp(date.getTime()),
+                LocalDateTime.now(),
                 usr,
                 category
         );
 
-
-
-
-
          System.out.println(task);
 
-        task = this.taskRepository.save(task);
-
+        this.taskRepository.save(task);
 
     }
 

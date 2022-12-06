@@ -6,8 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.NotFound;
+import org.springframework.cglib.core.Local;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -19,7 +22,7 @@ public class Task {
     public Task() {
 
     }
-    public Task(String description, Boolean status, Timestamp createTime, User user, TaskCategory taskCategory) {
+    public Task(String description, Boolean status, LocalDateTime createTime, User user, TaskCategory taskCategory) {
         this.description = description;
         this.status = status;
         this.createTime = createTime;
@@ -39,11 +42,11 @@ public class Task {
 
     @Column(name = "creation_time")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Timestamp createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "update_time")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Timestamp updateTime;
+    private LocalDateTime updateTime;
 
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

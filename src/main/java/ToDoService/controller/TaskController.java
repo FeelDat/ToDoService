@@ -21,14 +21,12 @@ public class TaskController {
     }
 
     @GetMapping(path = "list")
-    public Iterable<Task> getAllTasks(@RequestBody Filter filter) {
-//        public Iterable<Task> getAllTasks() {
+    public Iterable<Task> getAllTasks(@RequestBody(required = false) Filter filter) {
 
-//        return this.taskService.getAllTasks();
         return this.taskService.getAllTasks(filter);
-
     }
 
+    //Updating the status of the task in the database
     @PutMapping(path = "/{ID}/status/{status}")
     public void updateTaskStatus(@PathVariable Integer ID, @PathVariable Boolean status) {
 
@@ -36,7 +34,7 @@ public class TaskController {
         System.out.println("Status updated");
 
     }
-
+    //Adding new task to database
     @PostMapping(path = "/add")
     public void addTask(@RequestBody DTO_Task task) {
 
