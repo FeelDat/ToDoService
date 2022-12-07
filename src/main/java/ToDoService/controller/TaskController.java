@@ -2,7 +2,7 @@ package ToDoService.controller;
 
 
 import ToDoService.models.dto.DTO_Task;
-import ToDoService.models.Task;
+import ToDoService.models.dto.DTO_TaskList;
 import ToDoService.models.dto.Filter;
 import ToDoService.services.TaskService;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,7 @@ public class TaskController {
     }
 
     @GetMapping(path = "list")
-    public Iterable<Task> getAllTasks(@RequestBody(required = false ) Filter filter, @RequestParam(required = false) String sortBy) {
+    public DTO_TaskList getAllTasks(@RequestBody(required = false) Filter filter, @RequestParam(required = false) String sortBy) {
 
         return this.taskService.getAllTasks(filter, sortBy);
     }
@@ -34,6 +34,7 @@ public class TaskController {
         System.out.println("Status updated");
 
     }
+
     //Adding new task to database
     @PostMapping(path = "/add")
     public void addTask(@RequestBody DTO_Task task) {

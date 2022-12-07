@@ -13,10 +13,7 @@ import java.util.List;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
-
-    /*Make dto to retrive dto_Task with user and category fields replaced with their id,
-    and retrieve both objects by id using corresponding repositories*/
-
+    //Fix ordering by status (boolean data type
     @Query(value = "select t.task_id as taskId, t.description as description, t.status as status, "
             + "t.creation_time as createTime, t.update_time as updateTime, t.user_id as userId,"
             + " t.category_id as categoryId from tasks t "
@@ -29,11 +26,5 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
                                                                                @Param("updateDateEnd") LocalDateTime updateDateEnd,
                                                                                @Param("category") Integer category,
                                                                                @Param("sortBy") String sortBy);
-
-
-//    List<Task> findAllByCategoryAndCreateTimeBetweenAndUpdateTimeBetween(@Param("category") TaskCategory category
-//            , @Param("startDateBegin") LocalDateTime startDateBegin, @Param("startDateEnd") LocalDateTime startDateEnd
-//            , @Param("updateDateBegin") LocalDateTime updateDateBegin, @Param("updateDateEnd") LocalDateTime updateDateEnd, Sort sort);
-
-
+    
 }
