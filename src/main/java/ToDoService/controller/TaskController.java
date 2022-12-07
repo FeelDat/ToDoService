@@ -21,9 +21,9 @@ public class TaskController {
     }
 
     @GetMapping(path = "list")
-    public Iterable<Task> getAllTasks(@RequestBody(required = false) Filter filter) {
+    public Iterable<Task> getAllTasks(@RequestBody(required = false ) Filter filter, @RequestParam(required = false) String sortBy) {
 
-        return this.taskService.getAllTasks(filter);
+        return this.taskService.getAllTasks(filter, sortBy);
     }
 
     //Updating the status of the task in the database

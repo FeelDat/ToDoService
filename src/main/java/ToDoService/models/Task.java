@@ -1,17 +1,11 @@
 package ToDoService.models;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.NotFound;
-import org.springframework.cglib.core.Local;
+import lombok.Data;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Entity
@@ -22,6 +16,7 @@ public class Task {
     public Task() {
 
     }
+
     public Task(String description, Boolean status, LocalDateTime createTime, User user, TaskCategory taskCategory) {
         this.description = description;
         this.status = status;
@@ -29,6 +24,7 @@ public class Task {
         this.user = user;
         this.category = taskCategory;
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "task_id")
@@ -49,7 +45,7 @@ public class Task {
     private LocalDateTime updateTime;
 
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
@@ -57,8 +53,6 @@ public class Task {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "category_id", nullable = true)
     private TaskCategory category;
-
-
 
 
 //    @Override
