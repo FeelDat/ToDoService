@@ -1,7 +1,6 @@
 package ToDoService.models;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,10 +16,21 @@ public class Task {
 
     }
 
-    public Task(String description, Boolean status, LocalDateTime createTime, User user, TaskCategory taskCategory) {
+    public Task(String description, Boolean status, LocalDateTime createTime, LocalDateTime updateTime, User user, TaskCategory taskCategory) {
         this.description = description;
         this.status = status;
         this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.user = user;
+        this.category = taskCategory;
+    }
+
+    public Task(Integer Id, String description, Boolean status, LocalDateTime createTime, LocalDateTime updateTime, User user, TaskCategory taskCategory) {
+        this.taskId = Id;
+        this.description = description;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.user = user;
         this.category = taskCategory;
     }
@@ -28,7 +38,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "task_id")
-    private Integer id;
+    private Integer taskId;
 
     @Column(name = "description")
     private String description;
@@ -37,21 +47,19 @@ public class Task {
     private Boolean status;
 
     @Column(name = "creation_time")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createTime;
 
     @Column(name = "update_time")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime updateTime;
 
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "category_id", nullable = true)
+    @JoinColumn(name = "category_id")
     private TaskCategory category;
 
 

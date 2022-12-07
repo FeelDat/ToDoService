@@ -3,6 +3,7 @@ package ToDoService.services;
 
 import ToDoService.models.Task;
 import ToDoService.models.TaskCategory;
+import ToDoService.models.TaskWithId;
 import ToDoService.models.User;
 import ToDoService.models.dto.DTO_Task;
 import ToDoService.models.dto.Filter;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +41,7 @@ public class TaskService {
         LocalDateTime startDateEnd = null;
         LocalDateTime updateDateBegin = null;
         LocalDateTime updateDateEnd = null;
-        TaskCategory category = null;
+        Integer category = null;
 
         if (filter.getStartDateBegin() != null) {
             startDateBegin = LocalDate.parse(filter.getStartDateBegin(), formatter).atStartOfDay();
@@ -53,26 +55,38 @@ public class TaskService {
         if (filter.getUpdateDateEnd() != null) {
             updateDateEnd = LocalDate.parse(filter.getUpdateDateEnd(), formatter).atStartOfDay();
         }
-//        if (filter.getCategory() != null) {
-//            category = this.taskCategoryRepository.findTaskCategoryById(filter.getCategory());
-//        }
+        if (filter.getCategory() != null) {
+            category = filter.getCategory();
+        }
 
         if (sortBy == null) {
             sortBy = "task_id";
         }
 
-//        LocalDateTime startDateBegin = LocalDate.parse(filter.getStartDateBegin(), formatter).atStartOfDay();
-//        LocalDateTime startDateEnd = LocalDate.parse(filter.getStartDateEnd(), formatter).atStartOfDay();
-//        LocalDateTime updateDateBegin = LocalDate.parse(filter.getUpdateDateBegin(), formatter).atStartOfDay();
-//        LocalDateTime updateDateEnd = LocalDate.parse(filter.getUpdateDateEnd(), formatter).atStartOfDay();
-//        TaskCategory category = this.taskCategoryRepository.findTaskCategoryById(filter.getCategory());
-
-        //Very questionable optional parameters filter logic, probably have to be in CRUD level or idk
-
 
 //
 
-        List<Task> result = taskRepository.findAllByCategoryAndCreateTimeBetweenAndUpdateTimeBetween(startDateBegin, startDateEnd, updateDateBegin, updateDateEnd, filter.getCategory(), sortBy);
+        List<TaskWithId> dtoTaskList = taskRepository.findAllByCategoryAndCreateTimeBetweenAndUpdateTimeBetween(startDateBegin, startDateEnd, updateDateBegin, updateDateEnd, category, sortBy);
+
+        List<Task> result = new ArrayList<>();
+
+        for (TaskWithId dt : dtoTaskList) {
+
+
+            User usr = userRepository.findUserByUserId(dt.getUserId());
+            TaskCategory ctg = taskCategoryRepository.findTaskCategoryById(dt.getCategoryId());
+
+            Task task = new Task(dt.getTaskId(),
+                    dt.getDescription(),
+                    dt.getStatus(),
+                    dt.getCreateTime(),
+                    dt.getUpdateTime(),
+                    usr,
+                    ctg
+            );
+            result.add(task);
+        }
+
         System.out.println(result);
         return result;
     }
@@ -86,6 +100,7 @@ public class TaskService {
         t.setUpdateTime(LocalDateTime.now());
 
         this.taskRepository.save(t);
+
         System.out.println("Task Updated");
 
     }
@@ -93,14 +108,15 @@ public class TaskService {
     public void addTask(DTO_Task taskDto) {
 
 
-        TaskCategory category = taskCategoryRepository.findTaskCategoryById(taskDto.getCategory_id());
-        User usr = userRepository.findUserByUserId(taskDto.getUser_id());
+        TaskCategory category = taskCategoryRepository.findTaskCategoryById(taskDto.getCategoryId());
+        User usr = userRepository.findUserByUserId(taskDto.getUserId());
 
         System.out.println(category == null);
         System.out.println(usr == null);
 
         Task task = new Task(taskDto.getDescription(),
                 taskDto.getStatus(),
+                LocalDateTime.now(),
                 LocalDateTime.now(),
                 usr,
                 category
