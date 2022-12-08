@@ -2,10 +2,14 @@ package ToDoService.controller;
 
 
 import ToDoService.models.dto.DTO_Task;
-import ToDoService.models.dto.DTO_TaskList;
 import ToDoService.models.dto.Filter;
+import ToDoService.models.dto.Response;
+import ToDoService.models.dto.UpdateInfo;
 import ToDoService.services.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RequestMapping("todo")
 @RestController
@@ -21,28 +25,30 @@ public class TaskController {
     }
 
     @GetMapping(path = "list")
-    public DTO_TaskList getAllTasks(@RequestBody(required = false) Filter filter, @RequestParam(required = false) String sortBy) {
+    public Response getAllTasks(@RequestBody(required = false) Filter filter, @RequestParam(required = false) String sortBy) {
 
-        return this.taskService.getAllTasks(filter, sortBy);
+
+        return new Response(new Date(), taskService.getAllTasks(filter, sortBy), HttpStatus.OK);
     }
 
     //Updating the status of the task in the database
     @PutMapping(path = "/{ID}/status/{status}")
-    public void updateTaskStatus(@PathVariable Integer ID, @PathVariable Boolean status) {
+    public Response updateTaskStatus(@PathVariable Integer ID, @PathVariable Boolean status) {
 
-        this.taskService.updateTaskStatus(ID, status);
-        System.out.println("Status updated");
+        UpdateInfo updateInfo = this.taskService.updateTaskStatus(ID, status);
+        return new Response(new Date(), updateInfo, HttpStatus.OK);
 
     }
 
     //Adding new task to database
-    @PostMapping(path = "/add")
-    public void addTask(@RequestBody DTO_Task task) {
+    @PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
+    public Response addTask(@RequestBody DTO_Task task) {
 
         System.out.println("Adding new task");
-        this.taskService.addTask(task);
 
+
+        return new Response(new Date(), this.taskService.addTask(task), HttpStatus.OK);
     }
-
-
 }
+
+

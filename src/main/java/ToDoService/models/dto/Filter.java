@@ -1,21 +1,15 @@
 package ToDoService.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Filter {
 
-
-//    public Filter() {
-//        this.startDateBegin = null;
-//        this.startDateEnd = null;
-//        this.updateDateBegin = null;
-//        this.updateDateEnd = null;
-//    }
 
     @JsonProperty(value = "start_date_begin")
     private String startDateBegin;

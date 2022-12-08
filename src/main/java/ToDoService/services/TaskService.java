@@ -6,8 +6,8 @@ import ToDoService.models.TaskCategory;
 import ToDoService.models.TaskWithId;
 import ToDoService.models.User;
 import ToDoService.models.dto.DTO_Task;
-import ToDoService.models.dto.DTO_TaskList;
 import ToDoService.models.dto.Filter;
+import ToDoService.models.dto.UpdateInfo;
 import ToDoService.repositories.TaskCategoryRepository;
 import ToDoService.repositories.TaskRepository;
 import ToDoService.repositories.UserRepository;
@@ -33,7 +33,7 @@ public class TaskService {
         this.taskCategoryRepository = taskCategoryRepository;
     }
 
-    public DTO_TaskList getAllTasks(Filter filter, String sortBy) {
+    public Object getAllTasks(Filter filter, String sortBy) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -66,7 +66,7 @@ public class TaskService {
         List<TaskWithId> dtoTaskList = taskRepository.findAllByCategoryAndCreateTimeBetweenAndUpdateTimeBetween(startDateBegin, startDateEnd, updateDateBegin, updateDateEnd, category, sortBy);
 
         List<Task> ListTask = new ArrayList<>();
-        DTO_TaskList result = new DTO_TaskList();
+
 
         for (TaskWithId dt : dtoTaskList) {
 
@@ -84,25 +84,25 @@ public class TaskService {
             ListTask.add(task);
         }
 
-        System.out.println(result);
-        result.setTaskList(ListTask);
-        return result;
+
+        return ListTask;
     }
 
-    public void updateTaskStatus(Integer ID, Boolean status) {
+
+    public UpdateInfo updateTaskStatus(Integer ID, Boolean status) {
 
         Optional<Task> taskToUpdate = this.taskRepository.findById(ID);
         Task t = taskToUpdate.orElseThrow(NullPointerException::new);
-
+        Boolean oldStatus = t.getStatus();
         t.setStatus(status);
         t.setUpdateTime(LocalDateTime.now());
 
         this.taskRepository.save(t);
 
-        System.out.println("Task Updated");
+        return new UpdateInfo(t.getTaskId(), oldStatus, t.getStatus());
     }
 
-    public void addTask(DTO_Task taskDto) {
+    public Task addTask(DTO_Task taskDto) {
 
         TaskCategory category = taskCategoryRepository.findTaskCategoryById(taskDto.getCategoryId());
         User usr = userRepository.findUserByUserId(taskDto.getUserId());
@@ -120,7 +120,7 @@ public class TaskService {
 
         System.out.println(task);
 
-        this.taskRepository.save(task);
+        return this.taskRepository.save(task);
 
     }
 
