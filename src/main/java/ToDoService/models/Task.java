@@ -2,7 +2,6 @@ package ToDoService.models;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "tasks")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-
+//@AllArgsConstructor
 public class Task {
 
 
@@ -45,13 +43,24 @@ public class Task {
     @JoinColumn(name = "category_id")
     private TaskCategory category;
 
-    public Task(String description, Boolean status, LocalDateTime now, LocalDateTime now1, User usr, TaskCategory category) {
+
+    public Task(String description, Boolean status, LocalDateTime createTime, LocalDateTime updateTime, User usr, TaskCategory category) {
+        this.description = description;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.user = usr;
+        this.category = category;
     }
 
-
-//    @Override
-//    public String toString() {
-//        return "Task ID: " + id + " Description: " + description + " Status: " + status;
-//    }
-
+    public Task(Integer taskId, String description, Boolean status, LocalDateTime createTime, LocalDateTime updateTime, User usr, TaskCategory category) {
+        this.taskId = taskId;
+        this.description = description;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.user = usr;
+        this.category = category;
+    }
 }
+

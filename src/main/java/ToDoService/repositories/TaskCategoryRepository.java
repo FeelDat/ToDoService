@@ -13,6 +13,4 @@ public interface TaskCategoryRepository extends CrudRepository<TaskCategory, Int
     TaskCategory findTaskCategoryById(Integer categoryID);
 
 
-
-
 }

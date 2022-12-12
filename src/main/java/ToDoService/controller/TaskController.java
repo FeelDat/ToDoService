@@ -13,6 +13,7 @@ import java.util.Date;
 
 @RequestMapping("todo")
 @RestController
+
 public class TaskController {
 
     private final TaskService taskService;
@@ -29,6 +30,13 @@ public class TaskController {
 
 
         return new Response(new Date(), taskService.getAllTasks(filter, sortBy), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "pdfreport")
+    public Response getPdfReport(@RequestBody(required = false) Filter filter, @RequestParam(required = false) String sortBy) {
+
+        taskService.getPdfReport(filter, sortBy);
+        return new Response(new Date(), null, HttpStatus.OK);
     }
 
     //Updating the status of the task in the database

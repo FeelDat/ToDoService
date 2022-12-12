@@ -26,5 +26,5 @@ public interface TaskRepository extends JpaRepository<Task, Integer> {
                                                                                @Param("updateDateEnd") LocalDateTime updateDateEnd,
                                                                                @Param("category") Integer category,
                                                                                @Param("sortBy") String sortBy);
-    
+
 }

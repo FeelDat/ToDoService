@@ -1,6 +1,5 @@
 package ToDoService.repositories;
 
-import ToDoService.models.Task;
 import ToDoService.models.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

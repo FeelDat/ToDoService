@@ -10,7 +10,6 @@ public interface TaskWithId {
 
     Boolean getStatus();
 
-
     LocalDateTime getCreateTime();
 
     LocalDateTime getUpdateTime();

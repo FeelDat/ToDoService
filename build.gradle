@@ -10,6 +10,7 @@ sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
+    maven { url "https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" }
 }
 
 dependencies {
@@ -24,6 +25,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
     testImplementation 'org.mockito:mockito-core:4.9.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+    implementation 'net.sf.jasperreports:jasperreports:6.20.0'
+
 }
 
 tasks.named('test') {
@@ -36,3 +40,14 @@ test {
         excludeTags 'slow'
     }
 }
+
+
+//jar {
+////    manifest {
+////        attributes "Main-Class": "ToDoService.ToDoServiceApplication"
+////    }
+//
+//    from {
+//        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//}
