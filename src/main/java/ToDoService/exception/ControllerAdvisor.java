@@ -13,22 +13,10 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(TaskNotFoundException.class)
-    public ResponseEntity<Object> handleTaskNotFoundException(
-            TaskNotFoundException ex, WebRequest request) {
-
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", "Task not found");
-
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
-    }
-
-
+    
     @ExceptionHandler(NoDataFoundException.class)
     public ResponseEntity<Object> handleNoDataFoundException(
-            NoDataFoundException ex, WebRequest request) {
+            Exception ex, WebRequest request) {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());

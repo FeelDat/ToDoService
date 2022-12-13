@@ -2,7 +2,6 @@ package ToDoService.services;
 
 
 import ToDoService.exception.NoDataFoundException;
-import ToDoService.exception.TaskNotFoundException;
 import ToDoService.models.Task;
 import ToDoService.models.TaskCategory;
 import ToDoService.models.TaskWithId;
@@ -14,14 +13,13 @@ import ToDoService.models.dto.jasperTaskDto;
 import ToDoService.repositories.TaskCategoryRepository;
 import ToDoService.repositories.TaskRepository;
 import ToDoService.repositories.UserRepository;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,7 +41,7 @@ public class TaskService {
         this.taskCategoryRepository = taskCategoryRepository;
     }
 
-    public void getPdfReport(Filter filter, String sortBy) {
+    public JasperPrint getPdfReport(Filter filter, String sortBy) throws JRException {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -100,35 +98,16 @@ public class TaskService {
                     , dt.getUserId(), dt.getCategoryId());
             dtoJasperTaskList.add(dtoJasperTask);
         }
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(dtoJasperTaskList);
 
-        /* User home directory location */
-        String userHomeDirectory = System.getProperty("user.home");
-
-        /* Output file location */
-        String outputFile = userHomeDirectory + File.separatorChar + "JasperTableExample.pdf";
+        parameters.put("tasks", itemsJRBean);
 
 
-        try {
-
-            JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(dtoJasperTaskList);
-
-            /* Map to hold Jasper report Parameters */
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            parameters.put("tasks", itemsJRBean);
-
-            /* Using compiled version(.jasper) of Jasper report to generate PDF */
-            JasperPrint jasperPrint = JasperFillManager.fillReport("C:\\Users\\Alim.Aldybergen\\JavaProjects\\ToDoService\\src\\main\\resources\\jasper\\Blank_A4.jasper", parameters, new JREmptyDataSource());
-
-            /* outputStream to create PDF */
-            OutputStream outputStream = new FileOutputStream(new File(outputFile));
-            /* Write content to PDF file */
-            JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-
-        } catch (
-                JRException | FileNotFoundException ex) {
-            ex.printStackTrace();
-        }
+        return JasperFillManager.fillReport("C:\\Users\\Alim.Aldybergen\\JavaProjects\\ToDoService\\src\\main\\resources\\jasper\\Blank_A4.jasper", parameters, new JREmptyDataSource());
     }
+//
+//    }
 
 
     public Object getAllTasks(Filter filter, String sortBy) {
@@ -192,14 +171,13 @@ public class TaskService {
             ListTask.add(task);
         }
 
-
         return ListTask;
     }
 
 
     public UpdateInfo updateTaskStatus(Integer ID, Boolean status) {
 
-        Task t = this.taskRepository.findById(ID).orElseThrow(() -> new TaskNotFoundException(ID));
+        Task t = this.taskRepository.findById(ID).orElseThrow(NoDataFoundException::new);
 
         Boolean oldStatus = t.getStatus();
         t.setStatus(status);
