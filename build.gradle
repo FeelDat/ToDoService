@@ -11,7 +11,14 @@ sourceCompatibility = '17'
 repositories {
     mavenCentral()
     maven { url "https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" }
+    maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
+    maven { url 'https://repo.spring.io/milestone' }
 }
+
+ext {
+    set('springCloudVersion', "2022.0.0-RC2")
+}
+
 
 dependencies {
 
@@ -27,8 +34,15 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:4.9.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
     implementation 'net.sf.jasperreports:jasperreports:6.20.0'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:3.1.4'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {
