@@ -1,4 +1,5 @@
 rootProject.name = 'ToDoService'
 include 'discovery'
+include 'auth'
 include 'gateway'
 

@@ -1,6 +1,8 @@
 spring:
   application:
-    name: ToDoService
+    name: auth-service
+  #  main:
+  #    web-application-type: reactive
   datasource:
     url: jdbc:postgresql://localhost:5432/todolist
     username: postgres
@@ -9,8 +11,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
 server:
-  port: 8764
+  port: 9000
 eureka:
   client:
     eureka-server-port: 8761
@@ -20,5 +23,3 @@ eureka:
     fetch-registry: true
   instance:
     preferIpAddress: true
-
-

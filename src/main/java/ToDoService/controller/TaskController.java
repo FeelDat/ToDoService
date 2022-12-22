@@ -21,7 +21,7 @@ import java.util.Date;
 public class TaskController {
 
     private final TaskService taskService;
-    
+
     public TaskController(TaskService taskService) {
 
         this.taskService = taskService;
@@ -51,7 +51,7 @@ public class TaskController {
     }
 
     //Updating the status of the task in the database
-    @PutMapping("/{ID}/status/{status}")
+    @PutMapping("/update/{ID}/status/{status}")
     public Response updateTaskStatus(@PathVariable Integer ID, @PathVariable Boolean status) {
 
         UpdateInfo updateInfo = this.taskService.updateTaskStatus(ID, status);

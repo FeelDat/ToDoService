@@ -36,7 +36,6 @@ dependencies {
     implementation 'net.sf.jasperreports:jasperreports:6.20.0'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
 }
 
 dependencyManagement {
